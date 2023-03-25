@@ -1,0 +1,1 @@
+Puppet is an open-core software configuration management tool that runs on many Unix-like systems as well as on Microsoft Windows and includes its own declarative language to describe system configuration.

@@ -1,11 +1,22 @@
 #!/usr/bin/env bash
-# a Bash script that installs nginx on our web-01 server
-# custom 404 page
-sudo apt-get -y update
-sudo apt-get -y install nginx
-sudo service nginx start
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/page404.html
-myc="\terror_page 404 \/page404.html;\n"
-st="\tlocation \/ {"
-sudo sed -i "0,/$st/{s/$st/$myc$st/}" /etc/nginx/sites-enabled/default
-sudo service nginx restart
+#Configure your Nginx server to have a custom 404 page that contains the string Ceci n'est pas une page.
+
+STRING="Hello World!"
+
+REDIRECT="\n\tlocation /redirect_me {\n\t\treturn 301 https://youtu.be/dQw4w9WgXcQ;\n\t}\n"
+FILE="/etc/nginx/sites-available/default"
+
+ERRORFILE="/usr/share/nginx/html/404error.html"
+FOUR="Ceci n'est pas une page"
+ERRORREDIRECT="\n\terror_page 404 /404error.html;\n\tlocation = /404error.html {\n\t\troot /usr/share/nginx/html;\n\t\tinternal;\n\t}\n"
+
+apt-get -y update
+apt-get -y install nginx
+ufw allow 'Nginx HTTP'
+sudo echo "$STRING" > /var/www/html/index.nginx-debian.html
+sed -i "37i\ $REDIRECT" "$FILE"
+
+echo "$FOUR" > "$ERRORFILE"
+sed -i "37i\ $ERRORREDIRECT" "$FILE"
+
+service nginx restart

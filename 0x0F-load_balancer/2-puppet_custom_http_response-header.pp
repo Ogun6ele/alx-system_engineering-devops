@@ -1,12 +1,8 @@
-# install, configure and create a custom HTTP header on nginx
-package {'nginx':
-ensure => present,
-}
-
-service {'nginx':
-ensure  => running,
-}
-
-exec {'hostname=$(cat /etc/hostname); sudo sed -i "0,/http {/{s/http {/http {\n\tadd_header X-Served-By \"$hostname\"/}" /etc/nginx/nginx.conf; sudo service nginx restart':
-provider => 'shell',
+# creates a custom HTTP header response
+exec { 'command':
+  command  => 'apt-get -y update;
+  apt-get -y install nginx;
+  sudo sed -i "/listen 80 default_server;/a add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-available/default;
+  service nginx restart',
+  provider => shell,
 }
